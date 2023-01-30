@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+    <title>Game Board</title>
+    <style>
+        body,ul,li,p,h1,a,div,label input{
+            margin:0;
+            padding:0;
+            text-align:center;
+            list-style:none;
+            text-decoration:none;
+        }
+        p{
+            margin:10px;
+            text-align:justify;
+        }
+        textarea{
+            overflow-x:hidden;
+            overflow-y:auto;
+        }
+        h1{
+            clear:both;
+        }
+        h2{
+            text-align:left;
+            text-indent:0.5em;
+        }
+        input{
+            display:none;
+        }
+        #button{
+            background-color: #ffffff;
+            border:1px solid black;
+        }
+        #button:visited{
+            background-color:orange;
+        }
+        #button:hover{
+            background-color: #ffcc4b;
+        }
+        #button:active{
+            background-color:yellow;
+        }
+        button{
+            float:right;
+            font-size:25px;
+            background-color:white;
+            border:1px solid black;
+        }
+        button:visited{
+            background-color:orange;
+        }
+        button:hover{
+            background-color:red;
+        }
+        button:active{
+            background-color:yellow;
+        }
+        .lab{
+            font-size:15px;
+            background-color:white;
+            color:black;
+            margin:2px 0 2px 1px;
+            padding:20px 0;
+            border:1px solid black;
+            display:block;
+        }
+        .lab:visited{
+            background-color: rgba(255, 0, 0, 0.69);
+        }
+        .lab:hover{
+            background-color: #73ee6d;
+            color:white;
+        }
+        .lab:active{
+            background-color: rgba(255, 0, 0, 0.74);
+            color:white;
+        }
+        .home_label{
+            border:1px solid black;
+            background-color: #ffb655;
+        }
+        .add_game .warning{
+            visibility: hidden;
+            border:1px solid black;
+            width: 120px;
+            background-color: red;
+            color: #fff;
+            text-align: center;
+            padding: 2px 0;
+
+            position: absolute;
+            z-index: 3;
+        }
+        #header{
+            margin:0 auto;
+            width:980px;
+            height:80px;
+            line-height:80px;
+            font-size:40px;
+            background-color: #ffffff;
+        }
+        #box{
+            width: 980px;
+            height:642px;
+            margin: 0 auto;
+        }
+        #div_gamelist{
+            width:170px;
+            height:642px;
+            border-width: 1px;
+            border-top-style:solid;
+            border-right-style:none;
+            border-bottom-style:solid;
+            border-left-style:solid;
+            background-color: #ffffff;
+            position: relative;
+            float:left;
+        }
+        #list{
+            margin:2px auto;
+            padding:20px;
+            border:2px solid ;
+            background-color: antiquewhite;
+            font-size:30px;
+        }
+        .tab-content{
+            z-index: 2;
+            display: none;
+            overflow:auto;
+            font-size: 17px;
+            line-height: 25px;
+            width:810px;
+            height:642px;
+            border-width:1px;
+            border-top-style:solid;
+            border-right-style:solid;
+            border-bottom-style:solid;
+            border-left-style:none;
+            background-color: #73ee6d;
+            position: absolute;
+            top:0;
+            left:170px;
+        }
+        [id^="tab"]:checked + label {
+            border-color:black;
+            border-top-style:solid;
+            border-right-style:none;
+            border-bottom-style:solid;
+            border-left-style:solid;
+            border-width:2px;
+            background: #73ee6d;
+        }
+        [id^="tab"]:checked ~.tab-content/*[id^="tab-content"]*/ {
+            display: block;
+        }
+        #tab-content1{
+            /*display: flex;
+            align-items: center;
+            justify-content:center;*/
+            font-size:25px;
+        }
+        #welcome{
+            font-size:50px;
+        }
+        form input{
+            display:inline-block;
+            border:1px;
+            width:200px;
+            height:30px;
+        }
+        #footer{
+            border:1px dotted black;
+            margin:0 auto;
+            width:980px;
+            height:80px;
+            background-color: #edebec;
+            clear:both;
+        }
+    </style>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="jquery-3.1.1.js"></script>
+    <script>
+        $(document).ready(function(){
+            var i=9;
+            $("#button").on("click", function () {
+                var n=$("#game_name").val();
+                var c=$("#gcontent").val();
+                c=c.replace('\n','<br />');
+                n=$.trim(n);
+                c=$.trim(c);
+                if(n==""||n==null){$(".add_game .warning").css("visibility","visible");return false;}
+                if(c==""||c==null){$(".add_game .warning").css("visibility","visible");return false;}
+                else
+                {
+                    $(".add_game .warning").css("visibility","hidden");
+                    i++;
+                    var t1 = $("<li id='li"+i+"'>" +
+                        "<input type='radio' name='listtabs' id='tab"+i+"'/>" +
+                        "<label for='tab"+i+"' class='lab'>" +
+                        n +
+                        "</label>" +
+                        "<div id='tab-content"+i+"' class='tab-content'>" +
+                        "<button id="+i+">"+"Delete This Game"+"</button>"+
+                        "<br/>" +
+                        "<h1>" +
+                        n +
+                        "</h1>" +
+                        "<br/>" +
+                        "<section>" +
+                        "<article>" +
+                        "<pre>"+
+                        c +
+                        "</pre>"+
+                        "</article>" +
+                        "</section>" +
+                        "</div>" +
+                        "</li>");
+                    $("#game_list").append(t1);
+                    if($("#game_list").height()>=549)
+                    {
+                        $("#div_gamelist").height($("#div_gamelist").height() + 62);
+                        $(".tab-content").height($(".tab-content").height() + 62);
+                    }
+                }
+            });
+            $(document).on("click","button",function(){
+                var num= $(this).attr("id");
+                $("#li"+num+"").remove();
+                $("#tab1").attr("checked",true);
+                $("#tab-content1").css("display","block");
+                if($(".tab-content").height()!=642)
+                {
+                    $("#div_gamelist").height($("#div_gamelist").height() - 62);
+                    $(".tab-content").height($(".tab-content").height() - 62);
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+<header id="header">
+    Game Board
+</header>
+<div id="box">
+    <div id="div_gamelist">
+        <div id="list">Game List</div>
+        <ul id="game_list">
+            <li>
+                <input type="radio" name="listtabs" id="tab1" checked="checked"/>
+                <label for="tab1" class="lab">Home</label>
+                <div id="tab-content1" class="tab-content">
+                    <br/>
+                    <div id="welcome">Welcome</div>
+                    <br/>
+
+                    <form>
+                        <fieldset>
+                            <legend>Add Your Games</legend>
+                            <P><label for="game_name" class="home_label">The Name of Game</label></P>
+                            <p><input type="text" id="game_name" maxlength="20"></p>
+
+                            <P><label for="gcontent" class="home_label">Game Content</label></P>
+                            <P>
+                                <textarea id="gcontent"  rows="30" cols="100"></textarea>
+                            </P>
+                            <div class="add_game">
+                                <input type="button" id="button" value="Add">
+                                <span class="warning">No Data</span>
+                            </div>
+
+                        </fieldset>
+                    </form>
+
+                </div>
+            </li>
+            <li id="li2">
+                <input type="radio" name="listtabs" id="tab2"/>
+                <label for="tab2" class="lab">WarCraftIII</label>
+                <div id="tab-content2" class="tab-content">
+                    <button id="2">Delete This Game</button>
+                    <br/>
+                    <h1>WarCraftIII</h1>
+                    <br/>
+                    <section>
+                        <article>
+                            <br/>
+
+                            <p>Warcraft III: Reign of Chaos is a high fantasy real-time strategy video game developed and published by Blizzard Entertainment, and was released in July 2002. It is the second sequel to Warcraft: Orcs & Humans, and it is the third game set in the Warcraft fictional universe. An expansion pack, The Frozen Throne, was released in July 2003.
+                            </p>
+                            <p>
+                                Warcraft III contains four playable races: Humans and Orcs, which had previously appeared in Warcraft: Orcs & Humans and Warcraft II: Tides of Darkness, and the Night Elves and Undead, which were introduced to the Warcraft mythos in this installment.Warcraft III's single-player campaign is laid out similarly to that of StarCraft, also by Blizzard Entertainment, being told through all four of the game's races in a progressive manner. Multiplayer mode allows for play against other players, via the Internet, instead of playing against computer-controlled characters as is done in the single-player custom game mode.
+                            </p>
+                            <p>
+                                The game shipped 4.5 million units to retail stores and over one million units sold within a month. Warcraft III won many awards including "Game of the Year" from more than six different publications.
+                            </p>
+                        </article>
+                    </section>
+                </div>
+            </li>
+            <li id="li3">
+                <input type="radio" name="listtabs" id="tab3"/>
+                <label for="tab3" class="lab">StarCraft</label>
+                <div id="tab-content3" class="tab-content">
+                    <button id="3">Delete This Game</button>
+                    <br/>
+                    <h1>StarCraft</h1>
+                    <br/>
+                    <section>
+                        <article>
+                            <p>
+                                StarCraft is a military science fiction media franchise created by Chris Metzen and James Phinney, and owned by Blizzard Entertainment. The series, set in the beginning of the 26th century, centers on a galactic struggle for dominance between four species—the adaptable and mobile Terrans, the ever-evolving insectoid Zerg, the powerfully enigmatic Protoss, and the "god-like" Xel'Naga creator race—in a distant part of the Milky Way galaxy known as the Koprulu Sector. The series debuted with the video game StarCraft in 1998. Since then it has grown to include a number of other games as well as eight novelizations, two Amazing Stories articles, a board game, and other licensed merchandise such as collectible statues and toys.
+                            </p>
+                            <p>
+                                Blizzard Entertainment began planning StarCraft in 1995, with a development team led by Metzen and Phinney. The game debuted at E3 1996, and used a modified Warcraft II game engine. StarCraft also marked the creation of Blizzard Entertainment's film department; the game introduced high quality cinematics integral to the storyline of the series. Most of the original development team for StarCraft returned to work on the game's official expansion pack, Brood War; the game's development began shortly after StarCraft was released. In 2001, StarCraft: Ghost began development under Nihilistic Software. Unlike the previous real-time strategy games in the series, Ghost was to be a stealth-action game. After three years of development, work on the game was postponed in 2004. Development of StarCraft II: Wings of Liberty began in 2003; the game was later announced in May 2007 and was released in July 2010. The StarCraft II franchise continued with the StarCraft II: Heart of the Swarm expansion, which was released in March 2013. The third StarCraft II installment, StarCraft II: Legacy of the Void, released in November 2015.
+                            </p>
+                            <p>
+                                The original game and its official expansion have been praised as one of the benchmark real-time strategy games of its time. The series has gathered a solid following around the world, particularly in South Korea, where professional players and teams participate in matches, earn sponsorships, and compete in televised matches. By June 2007, StarCraft and Brood War had sold nearly 10 million copies combined. In addition, the series was awarded a star on the Walk of Game in 2006, and holds four Guinness World Records in the Guinness World Records Gamer's Edition of 2008.
+                            </p>
+                        </article>
+                    </section>
+                </div>
+            </li>
+            <li id="li4">
+                <input type="radio" name="listtabs" id="tab4"/>
+                <label for="tab4" class="lab">OverWatch</label>
+                <div id="tab-content4" class="tab-content">
+                    <button id="4">Delete This Game</button>
+                    <br/>
+                    <h1>OverWatch</h1>
+                    <br/>
+                    <section>
+                        <article>
+                            <p>
+                                Overwatch is a team-based multiplayer first-person shooter video game developed and published by Blizzard Entertainment. It was released in May 2016 for Microsoft Windows, PlayStation 4, and Xbox One.
+                            </p>
+                            <p>
+                                Overwatch puts players into two teams of six, with each player selecting one of several pre-defined hero characters with unique movement, attributes, and abilities; these heroes are divided into four classes: Offense, Defense, Tank and Support. Players on a team work together to secure and defend control points on a map and/or escort a payload across the map in a limited amount of time. Players gain cosmetic rewards that do not affect gameplay, such as character skins and victory poses, as they continue to play in matches. The game was launched with casual play, while Blizzard added competitive ranked play about a month after launch. Blizzard states that all Overwatch updates will remain free, with the only additional cost to players being microtransactions to earn additional cosmetic rewards.
+                            </p>
+                            <p>
+                                Overwatch is Blizzard's fourth major franchise, and came about following the 2014 cancellation of the ambitious massively multiplayer online role-playing game Titan. A portion of the Titan team came up with the concept of Overwatch, based on the success of team-based first-person shooters like Team Fortress 2 and the growing popularity of multiplayer online battle arenas, creating a hero-based shooter that emphasized teamwork. Some elements of Overwatch borrow assets and concepts from the canceled Titan project. After establishing the narrative of an optimistic near-future Earth setting after a global crisis, the developers aimed to create a diverse cast of heroes that spanned genders and ethnicities as part of this setting. Significant time was spent adjusting the balance of the characters, making sure that new players would still be able to have fun while skilled players would present each other with a challenge.
+                            </p>
+                            <p>
+                                Overwatch was unveiled at BlizzCon 2014 in a fully playable state, and was in a closed beta from late 2015 through early 2016. An open beta in May 2016 drew in more than 9.7 million players. The release of the game was promoted with short animated videos to introduce the game's narrative and each of the characters. Upon official release, Overwatch received universal acclaim from critics, who praised its accessibility and enjoyable gameplay. Overwatch has become recognized as an eSport, and in addition to sponsoring tournaments, Blizzard has announced plans to help support professional league play starting in 2017.
+                            </p>
+                        </article>
+                    </section>
+                </div>
+            </li>
+            <li id="li5">
+                <input type="radio" name="listtabs" id="tab5"/>
+                <label for="tab5" class="lab">Dota2</label>
+                <div id="tab-content5" class="tab-content">
+                    <button id="5">Delete This Game</button>
+                    <br/>
+                    <h1>Dota2</h1>
+                    <br/>
+                    <section>
+                        <article>
+                            <p>
+                                Dota 2 is a free-to-play multiplayer online battle arena (MOBA) video game developed and published by Valve Corporation. The game is the stand-alone sequel to Defense of the Ancients (DotA), which was a community-created mod for Blizzard Entertainment's Warcraft III: Reign of Chaos and its expansion pack, The Frozen Throne. Dota 2 is played in matches between two teams that consist of five players, with both teams occupying their own separate base on the map. Each of the ten players independently control a powerful character, known as a "hero", that all feature unique abilities and different styles of play. During a match, a player and their team collects experience points and items for their heroes in order to push through the opposing team's defenses. A team wins by being the first to destroy a large structure located in the opposing team's base, called the "Ancient".
+                            </p>
+                            <p>
+                                Development of Dota 2 began in 2009 when IceFrog, lead designer of the original Defense of the Ancients mod, was hired by Valve for the same role. Dota 2 was officially released on Steam in July 2013 for Microsoft Windows, OS X, and Linux, following a Windows-only open beta phase that began two years prior. The game initially used the original Source game engine until it was ported over to Source 2 in 2015, making it the first game to use it. The game also allows for the community to create custom game modes, maps, and cosmetics for the heroes, which are then uploaded to the Steam Workshop. Dota 2 is one of the most actively played games on Steam, with peaks of over a million concurrent players, and was praised by critics for its gameplay, production quality, and faithfulness to its predecessor, despite being criticized for its steep learning curve. The popularity of Dota 2 has led to official merchandise being produced for it, including apparel, accessories, and toys, as well as promotional tie-ins to other games and media.
+                            </p>
+                            <p>
+                                Dota 2 also has a widespread and active competitive scene, with teams from across the world playing professionally in various leagues and tournaments. Premium Dota 2 tournaments often have prize pools totaling millions of dollars, the highest of any eSport. The largest of them is known as The International, which is hosted by Valve and takes place annually at the KeyArena in Seattle. Valve also funds smaller, but more frequently held tournaments known as the Majors, which lead up to the International every year. Dedicated media coverage of professional tournaments are broadcast live on the internet, and sometimes simulcast on television networks, with peak viewership numbers in the millions.
+                            </p>
+                        </article>
+                    </section>
+                </div>
+            </li>
+            <li id="li6">
+                <input type="radio" name="listtabs" id="tab6"/>
+                <label for="tab6" class="lab">LOL</label>
+                <div id="tab-content6" class="tab-content">
+                    <button id="6">Delete This Game</button>
+                    <br/>
+                    <h1>LOL</h1>
+                    <br/>
+                    <section>
+                        <article>
+                            <p>
+                                League of Legends (abbreviated LoL) is a multiplayer online battle arena video game developed and published by Riot Games for Microsoft Windows and OS X. The game follows a freemium model and is supported by microtransactions, and was inspired by the Warcraft III: The Frozen Throne mod, Defense of the Ancients.
+                            </p>
+                            <p>
+                                In League of Legends, players assume the role of an unseen "summoner" that controls a "champion" with unique abilities and battle against a team of other players or computer-controlled champions. The goal is usually to destroy the opposing team's "nexus", a structure which lies at the heart of a base protected by defensive structures. Each League of Legends match is discrete, with all champions starting off fairly weak but increasing in strength by accumulating items and experience over the course of the game.
+                            </p>
+                            <p>
+                                League of Legends was generally well received at release, and has grown in popularity. By July 2012, League of Legends was the most played PC game in North America and Europe in terms of the number of hours played. As of January 2014, over 67 million people played League of Legends per month, 27 million per day, and over 7.5 million concurrently during peak hours. In September 2016 the company estimated that there are over 100 million active players each month.
+                            </p>
+                            <p>
+                                League of Legends has an active and widespread competitive scene. In North America and Europe, Riot Games organizes the League Championship Series, located in Los Angeles and Berlin respectively, which consists of 10 professional teams in each continent. Similar regional competitions exist in China, South Korea, Taiwan, South America, and Southeast Asia. These regional competitions culminate with the annual World Championship, which in 2013, had a grand prize of $1 million and attracted 32 million viewers online. The 2014 and 2015 tournaments each gave out one of the largest prize pools in eSports history, at $2.3 million. Winners also receive trophies, such as the Summoner's Cup, which was made by silversmiths Thomas Lyte. The 2016 World Championship's total prizepool was over 5 million dollars, with over 2 million going over to the winner of the tournament.
+                            </p>
+                        </article>
+                    </section>
+                </div>
+            </li>
+            <li id="li7">
+                <input type="radio" name="listtabs" id="tab7"/>
+                <label for="tab7" class="lab">Counter-Strike</label>
+                <div id="tab-content7" class="tab-content">
+                    <button id="7">Delete This Game</button>
+                    <br/>
+                    <h1>Counter-Strike</h1>
+                    <br/>
+                    <section>
+                        <article>
+                            <h2>Counter-Strike</h2>
+                            <p>
+                                Counter-Strike (officially abbreviated as CS) is a series of multiplayer first-person shooter video games, in which teams of terrorists and counter-terrorists battle to, respectively, perpetrate an act of terror (bombing, hostage-taking) and prevent it (bomb defusal, hostage rescue). The series began on Windows in 1999 with the first version of Counter-Strike. It was initially released as a modification for Half-Life and designed by Minh "Gooseman" Le and Jess "Cliffe" Cliffe, before the rights to the game's intellectual property were acquired by Valve Corporation, the developers of Half-Life.
+                            </p>
+                            <p>
+                                The game was followed-up with Counter-Strike: Condition Zero, developed by Turtle Rock Studios and released in 2004. Later that same year, Counter-Strike: Source was released by Valve. Released only eight months after Counter-Strike: Condition Zero, in November 2004, the game was a remake of the original Counter-Strike and the first in the series to run on Valve's newly created Source engine. The fourth game in the main series to have been developed by Valve, Counter-Strike: Global Offensive, was released in 2012 for Windows, OS X, Xbox 360, and PlayStation 3. Hidden Path Entertainment, who also worked on Counter-Strike: Source post-release, helped to develop the game alongside Valve. Several spin-off titles have been released for Asian territories.
+                            </p>
+                        </article>
+                        <article>
+                            <h2>Counter-Strike:Global Offensive</h2>
+                            <p>
+                                Counter-Strike: Global Offensive (CS:GO) is a multiplayer first-person shooter video game developed by Hidden Path Entertainment and Valve Corporation. It is the fourth game in the main Counter-Strike franchise. Counter-Strike: Global Offensive was released for Microsoft Windows, OS X, Xbox 360, and PlayStation 3 in August 2012, with the Linux version being released in September 2014. It features classic content, such as revamped versions of classic maps, as well as brand new maps, characters and game modes. Cross-platform multiplayer was planned between Windows, OS X, Linux, and PlayStation 3 players, but was ultimately limited to Windows, OS X, and Linux because of the differences in update-frequency between systems.
+                            </p>
+                        </article>
+                    </section>
+                </div>
+            </li>
+            <li id="li8">
+                <input type="radio" name="listtabs" id="tab8"/>
+                <label for="tab8" class="lab">MineCraft</label>
+                <div id="tab-content8" class="tab-content">
+                    <button id="8">Delete This Game</button>
+                    <br/>
+                    <h1>MineCraft</h1>
+                    <br/>
+                    <section>
+                        <article>
+                            <p>
+                                Minecraft is a sandbox video game originally created by Swedish game designer Markus "Notch" Persson and later developed and published by Mojang. The creative and building aspects of Minecraft enable players to build constructions out of textured cubes in a 3D procedurally generated world. Other activities in the game include exploration, resource gathering, crafting, and combat. Multiple gameplay modes are available, including survival mode where the player must acquire resources to build the world and maintain health, a creative mode where players have unlimited resources to build with and the ability to fly, an adventure mode where players can play custom maps created by other players, and a spectator mode where players can fly around and clip through blocks, but cannot place or destroy any. The PC version of the game is renowned for its support for community created mods, which add various new items and mechanics to the game.
+                            </p>
+                            <p>
+                                Minecraft received praise from critics upon release, and was nominated for and won various awards and accolades. As of June 2016, over 106 million copies have been sold across all platforms, with more than 40 million unique players each month, making it the best-selling PC game to date and the second best-selling video game of all time. In September 2014, Microsoft announced a deal to buy Mojang and the Minecraft intellectual property for US$2.5 billion, with the acquisition being completed two months later.
+                            </p>
+                        </article>
+                    </section>
+                </div>
+            </li>
+            <li id="li9">
+                <input type="radio" name="listtabs" id="tab9"/>
+                <label for="tab9" class="lab">FIFA</label>
+                <div id="tab-content9" class="tab-content">
+                    <button id="9">Delete This Game</button>
+                    <br/>
+                    <h1>FIFA</h1>
+                    <br/>
+                    <section>
+                        <article>
+
+                            <p>
+                                FIFA, also known as FIFA Football or FIFA Soccer, is a series of association football video games or football simulator, released annually by Electronic Arts under the EA Sports label. While there was no major competition when EA released the first titles in their Madden NFL and NHL series, football video games such as Sensible Soccer, Kick Off and Match Day had been developed since the late 1980s and already competitive in the games market when EA Sports announced a football game as the next addition to their EA Sports label.
+                            </p>
+                            <p>
+                                When the series began in late 1993, it was notable for being the first to have an official licence from FIFA, the world governing body of football. The latest installments in the series contain many exclusively-licensed leagues including leagues and teams from around the world, including the German Bundesliga and 2. Bundesliga, English Premier League and Football League, Italian Serie A, Spanish La Liga, Portuguese Primeira Liga, French Ligue 1, Dutch Eredivisie, Brazilian Campeonato Brasileiro Série A, Mexican Liga MX, American Major League Soccer, South Korean K-League, Saudi Professional League, Australian A-League, Turkish Süper Lig and Argentine Primera División, allowing the use of real leagues, clubs and player names and likenesses within the games. In addition, internationally popular clubs from around the world, including some teams from Greece and South Africa, without those nations' entire leagues.
+                            </p>
+                            <p>
+                                The main series has been complemented by additional installments based on single major tournaments, such as the FIFA World Cup, UEFA European Football Championship and UEFA Champions League, as well as a series of football management titles.
+                            </p>
+                            <p>
+                                As of FIFA 17, Marco Reus is the face of the franchise, appearing on the front cover of the series and in promotional campaigns and advertisements. He replaced Lionel Messi, who appeared on four straight covers from FIFA 13 to FIFA 16.
+                            </p>
+                            <p>
+                                As of 2011, the FIFA franchise has been localised into 18 languages and available in 51 countries. The series has sold more than 100 million copies worldwide, making it the best-selling sports video game franchise in the world, and one of the best-selling video game franchises. Also, FIFA 12 holds the record for the "fastest selling sports game ever" with over 3.2 million games sold and over $186 million generated at retail in its first week of release.
+                            </p>
+                            <p>
+                                The franchise's latest release is FIFA 17, released on September 27, 2016 in North America, and on September 29, 2016 in the rest of world. It is available for multiple gaming systems, including the PS4 and Xbox One, among others.
+                            </p>
+
+                        </article>
+                    </section>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+<footer id="footer">
+    Wang YiSen
+    <div id="time">
+        <script>
+            document.getElementById('time').innerHTML=new Date().toLocaleString();
+            setInterval("document.getElementById('time').innerHTML=new Date().toLocaleString();",1000);
+        </script>
+    </div>
+</footer>
+</body>
+</html>
+
+
